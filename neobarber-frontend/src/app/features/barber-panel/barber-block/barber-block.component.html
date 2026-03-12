@@ -1,0 +1,31 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h2>Bloquear horario</h2>
+    <p>Registra un bloqueo para que no se puedan reservar citas en ese rango.</p>
+  </div>
+
+  <div *ngIf="msg" class="alert success">{{ msg }}</div>
+  <div *ngIf="error" class="alert error">{{ error }}</div>
+
+  <div class="card nb-card block-card">
+    <div class="form-grid">
+      <div>
+        <label>Inicio</label>
+        <input type="datetime-local" [(ngModel)]="startAt" />
+      </div>
+      <div>
+        <label>Fin</label>
+        <input type="datetime-local" [(ngModel)]="endAt" />
+      </div>
+      <div class="full-width">
+        <label>Motivo</label>
+        <input [(ngModel)]="reason" placeholder="Ej. Almuerzo, descanso, diligencia" />
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-primary" (click)="block()">Crear bloqueo</button>
+      <a routerLink="/barber-panel/agenda" class="btn btn-outline">Volver a agenda</a>
+    </div>
+  </div>
+</div>

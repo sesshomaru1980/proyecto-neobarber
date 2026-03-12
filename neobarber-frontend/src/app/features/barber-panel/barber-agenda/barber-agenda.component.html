@@ -1,0 +1,55 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h2>Panel Barbero</h2>
+    <p>Gestiona la agenda, revisa las citas y actualiza su estado.</p>
+  </div>
+
+  <div class="panel-top-actions">
+    <a routerLink="/barber-panel/block" class="btn btn-primary">Bloquear horario</a>
+  </div>
+
+  <div *ngIf="msg" class="alert success">{{ msg }}</div>
+  <div *ngIf="error" class="alert error">{{ error }}</div>
+
+  <div class="card nb-card">
+    <div class="section-title-row">
+      <h3>Agenda de citas</h3>
+      <button type="button" class="btn btn-outline" (click)="loadAppointments()">Recargar</button>
+    </div>
+
+    <div *ngIf="loading" class="empty-state">Cargando agenda...</div>
+    <div *ngIf="!loading && appointments.length === 0" class="empty-state">No hay citas registradas para mostrar.</div>
+
+    <div *ngFor="let a of appointments" class="appointment-item">
+      <div class="appointment-head">
+        <div>
+          <strong class="appointment-title">{{ getServiceName(a) }}</strong>
+          <p class="appointment-subtitle">Cliente: {{ getClientName(a) }}</p>
+          <p class="appointment-subtitle" *ngIf="a.barber?.name">
+            Barbero: {{ a.barber.name }}
+          </p>
+        </div>
+
+        <span class="status-badge"
+          [ngClass]="{
+            'pending': a.status === 'Pendiente',
+            'confirmed': a.status === 'Confirmada',
+            'completed': a.status === 'Completada',
+            'cancelled': a.status === 'Cancelada'
+          }">{{ a.status }}</span>
+      </div>
+
+      <div class="appointment-meta">
+        <span><strong>Inicio:</strong> {{ a.startAt | date:'short' }}</span>
+        <span><strong>Fin:</strong> {{ a.endAt | date:'short' }}</span>
+        <span *ngIf="a.notes"><strong>Notas:</strong> {{ a.notes }}</span>
+      </div>
+
+      <div class="actions-row">
+        <button *ngIf="canConfirm(a.status)" type="button" class="btn btn-primary" (click)="updateStatus(a._id, 'Confirmada')">Confirmar</button>
+        <button *ngIf="canComplete(a.status)" type="button" class="btn btn-success" (click)="updateStatus(a._id, 'Completada')">Completar</button>
+        <button *ngIf="canCancel(a.status)" type="button" class="btn btn-danger" (click)="updateStatus(a._id, 'Cancelada')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

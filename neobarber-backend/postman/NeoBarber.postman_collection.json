@@ -1,0 +1,869 @@
+{
+  "info": {
+    "_postman_id": "929b3c46-3e51-4696-a1d8-58bbe59b18b5",
+    "name": "NeoBarber API - Validación Completa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección Postman para validar la NeoBarber API (Auth, Users, Services, Barbers, Appointments, Availability). Ejecuta en orden. Usa variables de colección para tokens e IDs."
+  },
+  "item": [
+    {
+      "name": "00 - Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Verifica que la API está corriendo."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 - Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/register (Admin) - opcional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registra un Admin (si ya existe puede responder 409/400).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Admin Principal\",\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\",\n  \"role\": \"Admin\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/auth/register (Barber) - opcional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registra un Barbero (si ya existe, continúa con login).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Carlos Barber\",\n  \"email\": \"{{barberEmail}}\",\n  \"password\": \"{{barberPassword}}\",\n  \"role\": \"Barber\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const data = pm.response.json();",
+                  "  const id = data?.user?.id || data?.user?._id || data?.userId || data?._id;",
+                  "  if (id) pm.collectionVariables.set('barberUserId', id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/register (Client) - opcional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registra un Cliente (si ya existe, continúa con login).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Juan Cliente\",\n  \"email\": \"{{clientEmail}}\",\n  \"password\": \"{{clientPassword}}\",\n  \"role\": \"Client\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const data = pm.response.json();",
+                  "  const id = data?.user?.id || data?.user?._id || data?.userId || data?._id;",
+                  "  if (id) pm.collectionVariables.set('clientUserId', id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (Admin) -> guarda adminToken",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login admin OK', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const data = pm.response.json();",
+                  "if (data?.accessToken) pm.collectionVariables.set('adminToken', data.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (Barber) -> guarda barberToken",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{barberEmail}}\",\n  \"password\": \"{{barberPassword}}\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login barber OK', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const data = pm.response.json();",
+                  "if (data?.accessToken) pm.collectionVariables.set('barberToken', data.accessToken);",
+                  "if (data?.user?.id) pm.collectionVariables.set('barberUserId', data.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (Client) -> guarda clientToken",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{clientEmail}}\",\n  \"password\": \"{{clientPassword}}\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login client OK', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const data = pm.response.json();",
+                  "if (data?.accessToken) pm.collectionVariables.set('clientToken', data.accessToken);",
+                  "if (data?.user?.id) pm.collectionVariables.set('clientUserId', data.user.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Users",
+      "item": [
+        {
+          "name": "GET /api/users/me (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/me (Barber)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{barberToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  if (data?._id) pm.collectionVariables.set('barberUserId', data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/users/:id/deactivate (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{barberUserId}}/deactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{barberUserId}}",
+                "deactivate"
+              ]
+            },
+            "description": "Desactiva el usuario del barbero (soft disable).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Services",
+      "item": [
+        {
+          "name": "POST /api/services (Admin) -> guarda serviceId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/services",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "services"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corte Clásico\",\n  \"description\": \"Corte tradicional\",\n  \"durationMinutes\": 30,\n  \"price\": 20000\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Servicio creado', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const data = pm.response.json();",
+                  "if (data?._id) pm.collectionVariables.set('serviceId', data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/services (listar)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/services",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "services"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Barbers",
+      "item": [
+        {
+          "name": "POST /api/barbers/upsert (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/barbers/upsert",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "barbers",
+                "upsert"
+              ]
+            },
+            "description": "Crea/actualiza perfil del barbero y disponibilidad.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{barberUserId}}\",\n  \"bio\": \"Especialista en cortes modernos y degradados\",\n  \"weeklyAvailability\": [\n    {\n      \"dayOfWeek\": 1,\n      \"start\": \"09:00\",\n      \"end\": \"18:00\"\n    },\n    {\n      \"dayOfWeek\": 2,\n      \"start\": \"09:00\",\n      \"end\": \"18:00\"\n    },\n    {\n      \"dayOfWeek\": 3,\n      \"start\": \"09:00\",\n      \"end\": \"18:00\"\n    }\n  ]\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/barbers (listar activos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/barbers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "barbers"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{clientToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Availability",
+      "item": [
+        {
+          "name": "GET /api/availability/daily-slots (Client)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/daily-slots?barberId={{barberUserId}}&date=2026-10-01",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "daily-slots?barberId={{barberUserId}}&date=2026-10-01"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{clientToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/availability/block (Barber)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/block",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "block"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barberId\": \"{{barberUserId}}\",\n  \"startAt\": \"2026-10-01T12:00:00.000Z\",\n  \"endAt\": \"2026-10-01T13:00:00.000Z\",\n  \"reason\": \"Almuerzo\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{barberToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Appointments",
+      "item": [
+        {
+          "name": "POST /api/appointments (Client) -> guarda appointmentId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barberId\": \"{{barberUserId}}\",\n  \"serviceId\": \"{{serviceId}}\",\n  \"startAt\": \"2026-10-01T15:00:00.000Z\",\n  \"notes\": \"Prueba de cita\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{clientToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Cita creada', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const data = pm.response.json();",
+                  "if (data?._id) pm.collectionVariables.set('appointmentId', data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/appointments (solapamiento) -> esperado 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barberId\": \"{{barberUserId}}\",\n  \"serviceId\": \"{{serviceId}}\",\n  \"startAt\": \"2026-10-01T15:00:00.000Z\",\n  \"notes\": \"Prueba solapamiento\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{clientToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Debe rechazar solapamiento (409 ideal)', () => pm.expect(pm.response.code).to.be.oneOf([409,400]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/appointments/me (Client)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{clientToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/appointments/:id/status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "{{appointmentId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Confirmada\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('baseUrl')) {",
+          "  pm.collectionVariables.set('baseUrl', 'http://localhost:3000');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@neo.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": "123456"
+    },
+    {
+      "key": "barberEmail",
+      "value": "carlos@neo.com"
+    },
+    {
+      "key": "barberPassword",
+      "value": "123456"
+    },
+    {
+      "key": "clientEmail",
+      "value": "juan@neo.com"
+    },
+    {
+      "key": "clientPassword",
+      "value": "123456"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "barberToken",
+      "value": ""
+    },
+    {
+      "key": "clientToken",
+      "value": ""
+    },
+    {
+      "key": "barberUserId",
+      "value": ""
+    },
+    {
+      "key": "clientUserId",
+      "value": ""
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    },
+    {
+      "key": "appointmentId",
+      "value": ""
+    }
+  ]
+}

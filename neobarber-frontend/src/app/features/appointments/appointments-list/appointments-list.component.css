@@ -1,0 +1,12 @@
+.page-shell { padding: 24px 0; }
+.page-header { margin-bottom: 18px; }
+.page-header h2 { margin: 0 0 6px; color: var(--nb-text-dark); font-size: 1.9rem; }
+.page-header p { margin: 0; color: #6b7280; }
+.nb-card { border-radius: 16px; }
+.empty-state { padding: 18px 0; color: #6b7280; text-align: center; }
+.appointment-item { padding: 16px 0; border-top: 1px solid #eceff3; }
+.appointment-item:first-of-type { border-top: none; }
+.appointment-title { font-size: 1.05rem; color: var(--nb-text-dark); }
+.appointment-subtitle { margin: 6px 0 0; color: #6b7280; }
+.appointment-meta { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 10px; color: #374151; font-size: 0.95rem; }
+.alert.error { background: rgba(185, 28, 28, 0.12); color: #991b1b; border: 1px solid rgba(185, 28, 28, 0.18); padding: 12px 14px; border-radius: 12px; margin-bottom: 14px; }

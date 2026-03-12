@@ -1,0 +1,52 @@
+:root {
+  --nb-primary: #2450f5;
+  --nb-primary-dark: #1d3fd6;
+  --nb-secondary: #7a1e2b;
+  --nb-secondary-dark: #3b1d26;
+  --nb-bg-dark: #1f2f55;
+  --nb-bg-gradient: linear-gradient(180deg, #3b1d26 0%, #1f2f55 100%);
+  --nb-card-bg: rgba(255, 255, 255, 0.1);
+  --nb-card-border: rgba(255, 255, 255, 0.18);
+  --nb-text-main: #ffffff;
+  --nb-text-soft: #d1d5db;
+  --nb-surface: #ffffff;
+  --nb-surface-border: #e5e7eb;
+  --nb-text-dark: #1f2937;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.card {
+  background: var(--nb-surface);
+  border: 1px solid var(--nb-surface-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.btn {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--nb-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--nb-primary-dark);
+}

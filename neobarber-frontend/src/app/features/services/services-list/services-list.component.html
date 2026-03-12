@@ -1,0 +1,143 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h2>Servicios</h2>
+    <p>Consulta y administra los servicios de NeoBarber.</p>
+  </div>
+
+  <div *ngIf="msg" class="alert success">{{ msg }}</div>
+  <div *ngIf="error" class="alert error">{{ error }}</div>
+
+  <!-- Formulario de creación -->
+  <div class="card nb-card" *ngIf="isAdmin">
+    <h3>Crear servicio</h3>
+
+    <div class="form-grid">
+      <div>
+        <label>Nombre</label>
+        <input [(ngModel)]="name" placeholder="Corte clásico" />
+      </div>
+
+      <div>
+        <label>Descripción</label>
+        <input [(ngModel)]="description" placeholder="Descripción del servicio" />
+      </div>
+
+      <div>
+        <label>Duración (min)</label>
+        <input type="number" [(ngModel)]="durationMinutes" />
+      </div>
+
+      <div>
+        <label>Precio</label>
+        <input type="number" [(ngModel)]="price" />
+      </div>
+
+      <div class="full-width">
+        <label>URL de la imagen</label>
+        <input [(ngModel)]="imageUrl" type="url" placeholder="https://ejemplo.com/imagen.jpg" />
+      </div>
+
+      <!-- Vista previa de imagen al crear -->
+      <div class="full-width" *ngIf="hasImage(imageUrl)">
+        <label>Vista previa</label>
+        <div class="service-image-preview">
+          <img [src]="imageUrl" alt="Vista previa del servicio" />
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button type="button" class="btn btn-primary" (click)="create()">Crear servicio</button>
+    </div>
+  </div>
+
+  <!-- Listado -->
+  <div class="card nb-card">
+    <h3>Listado de servicios</h3>
+
+    <div *ngFor="let s of services" class="service-item">
+      <!-- Vista normal -->
+      <div *ngIf="editingId !== s._id">
+        <div class="service-top">
+          <div class="service-top-left">
+            <div class="service-image-thumb" *ngIf="hasImage(s.imageUrl)">
+              <img [src]="s.imageUrl" [alt]="s.name" />
+            </div>
+
+            <div>
+              <strong class="service-title">{{ s.name }}</strong>
+              <p class="service-desc">{{ s.description }}</p>
+            </div>
+          </div>
+
+          <span class="service-badge" *ngIf="s.isActive !== false">Activo</span>
+          <span class="service-badge inactive" *ngIf="s.isActive === false">Inactivo</span>
+        </div>
+
+        <div class="service-meta">
+          <span>Duración: {{ s.durationMinutes }} min</span>
+          <span>Precio: {{ s.price }}</span>
+        </div>
+
+        <div class="service-meta" *ngIf="hasImage(s.imageUrl)">
+          <span>Imagen configurada</span>
+        </div>
+
+        <div *ngIf="isAdmin" class="actions-row">
+          <button type="button" class="btn btn-outline" (click)="startEdit(s)">Editar</button>
+          <button type="button" class="btn btn-danger" (click)="remove(s._id)">Eliminar</button>
+        </div>
+      </div>
+
+      <!-- Vista edición -->
+      <div *ngIf="editingId === s._id">
+        <div class="form-grid">
+          <div>
+            <label>Nombre</label>
+            <input [(ngModel)]="editName" />
+          </div>
+
+          <div>
+            <label>Descripción</label>
+            <input [(ngModel)]="editDescription" />
+          </div>
+
+          <div>
+            <label>Duración (min)</label>
+            <input type="number" [(ngModel)]="editDurationMinutes" />
+          </div>
+
+          <div>
+            <label>Precio</label>
+            <input type="number" [(ngModel)]="editPrice" />
+          </div>
+
+          <div class="full-width">
+            <label>URL de la imagen</label>
+            <input [(ngModel)]="editImageUrl" type="url" placeholder="https://ejemplo.com/imagen.jpg" />
+          </div>
+
+          <div class="full-width" *ngIf="hasImage(editImageUrl)">
+            <label>Vista previa</label>
+            <div class="service-image-preview">
+              <img [src]="editImageUrl" alt="Vista previa del servicio" />
+            </div>
+          </div>
+
+          <div>
+            <label>Activo</label>
+            <select [(ngModel)]="editIsActive">
+              <option [ngValue]="true">Sí</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button type="button" class="btn btn-primary" (click)="update()">Guardar</button>
+          <button type="button" class="btn btn-outline" (click)="cancelEdit()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

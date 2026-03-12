@@ -1,0 +1,57 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h2>Agendar cita</h2>
+    <p>Selecciona barbero, servicio y un horario disponible dentro de la jornada de atención.</p>
+  </div>
+
+  <div *ngIf="msg" class="alert success">{{ msg }}</div>
+  <div *ngIf="error" class="alert error">{{ error }}</div>
+
+  <div *ngIf="auth.role() !== 'Client'" class="alert warning">
+    Esta pantalla está pensada para usuarios con rol <strong>Client</strong>.
+  </div>
+
+  <div class="card nb-card appointment-card">
+    <div class="info-box">
+      <strong>Horario de atención:</strong>
+      Lunes a sábado de 09:00 a 20:00. Las citas se manejan cada 30 minutos y la última cita permitida es a las 19:30.
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Barbero</label>
+        <select [(ngModel)]="barberId">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let b of barbers" [value]="getBarberId(b)">
+            {{ getBarberName(b) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Servicio</label>
+        <select [(ngModel)]="serviceId">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let s of services" [value]="s._id">
+            {{ s.name }} ({{ s.durationMinutes }} min)
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Fecha y hora</label>
+        <input type="datetime-local" [(ngModel)]="startAt" />
+        <small class="helper-text">No se permiten domingos. Usa horarios entre 09:00 y 19:30.</small>
+      </div>
+
+      <div class="field">
+        <label>Notas (opcional)</label>
+        <textarea [(ngModel)]="notes" rows="4" placeholder="Ej. Por favor puntual"></textarea>
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button type="button" class="btn btn-primary btn-large" (click)="create()">Agendar cita</button>
+    </div>
+  </div>
+</div>

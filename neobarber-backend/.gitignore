@@ -1,0 +1,68 @@
+# =========================
+# NODE MODULES
+# =========================
+node_modules/
+
+# =========================
+# VARIABLES DE ENTORNO
+# =========================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# =========================
+# LOGS
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# SISTEMA OPERATIVO
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# EDITORES
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# COVERAGE / TESTING
+# =========================
+coverage/
+
+# =========================
+# ARCHIVOS TEMPORALES
+# =========================
+tmp/
+temp/
+
+# =========================
+# BUILD (por si en futuro agregas frontend)
+# =========================
+dist/
+build/
+
+# =========================
+# ARCHIVOS GENERADOS
+# =========================
+*.pid
+*.seed
+
+# =========================
+# BASES DE DATOS LOCALES
+# =========================
+*.db
+*.sqlite
+
+# =========================
+# SWAGGER (si se generan archivos automáticos)
+# =========================
+swagger-output.json

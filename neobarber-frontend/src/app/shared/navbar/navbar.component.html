@@ -1,0 +1,14 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <img src="assets/logo-neobarber.png" alt="NeoBarber" class="nav-logo" />
+    <a routerLink="/services">Servicios</a>
+    <a routerLink="/barbers">Barberos</a>
+    <a routerLink="/appointments" *ngIf="auth.role() === 'Client'">Mis citas</a>
+    <a routerLink="/appointments/create" *ngIf="auth.role() === 'Client'">Agendar</a>
+    <a routerLink="/barber-panel/agenda" *ngIf="auth.role() === 'Barber' || auth.role() === 'Admin'">Panel Barbero</a>
+  </div>
+  <div class="nav-right" *ngIf="auth.user$ | async as u">
+    <span class="nav-user">{{ u.email }} ({{ u.role }})</span>
+    <button class="btn btn-primary" (click)="logout()">Salir</button>
+  </div>
+</nav>

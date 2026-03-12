@@ -1,0 +1,86 @@
+.dashboard-wrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  background: linear-gradient(180deg, #3b1d26 0%, #23365d 55%, #1d2f52 100%);
+}
+.overlay-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.16;
+}
+.dashboard-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 42px 22px 30px;
+  box-sizing: border-box;
+}
+.logo-neobarber {
+  width: 170px;
+  max-width: 80%;
+  margin-top: 4px;
+  margin-bottom: 44px;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+}
+.tools-row {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  font-size: 1.9rem;
+  opacity: 0.18;
+  width: 100%;
+}
+.welcome-text h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.2;
+}
+.welcome-text p {
+  margin: 8px 0 0;
+  color: #ffffff;
+  font-size: 1.9rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.2;
+}
+.user-icon {
+  margin-top: auto;
+  margin-bottom: 18px;
+  font-size: 2.7rem;
+  color: #f4f4f4;
+  opacity: 0.95;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.actions button {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.btn-login { background: #2450f5; color: white; }
+.btn-register { background: #ececec; color: #222; }

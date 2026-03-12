@@ -1,0 +1,97 @@
+<div class="login-page">
+
+  <div class="login-card">
+
+    <img src="assets/logo-neobarber.png" class="logo">
+    <a routerLink="/" class="back-home">
+  ← Volver al inicio
+</a>
+
+    <h2>INICIAR SESIÓN</h2>
+
+    <div *ngIf="error" class="alert error">
+      {{ error }}
+    </div>
+
+    <label>Email</label>
+    <input
+      type="email"
+      [(ngModel)]="email"
+      placeholder="Email"
+    />
+
+    <label>Password</label>
+    <input
+      type="password"
+      [(ngModel)]="password"
+      placeholder="Password"
+    />
+
+    <button class="btn-login" (click)="login()">
+      Iniciar
+    </button>
+
+    <p class="forgot-link" (click)="openRecover()">
+      ¿Olvidaste tu contraseña?
+    </p>
+
+  </div>
+
+</div>
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="recover-overlay" *ngIf="showRecover">
+
+  <div class="recover-card">
+
+    <h2>¡Recupera tu contraseña!</h2>
+
+    <p class="recover-text">
+      Introduce el correo electrónico con el que te registraste en NeoBarber
+      y te enviaremos un E-mail para que recuperes tu contraseña.
+    </p>
+<a routerLink="/" class="back-home">
+← Volver al inicio
+</a>
+    <div *ngIf="recoverError" class="alert error">
+      {{ recoverError }}
+    </div>
+
+    <div *ngIf="recoverSuccess" class="alert success">
+      ✅ Si el correo existe, recibirás un correo para recuperar tu contraseña.
+    </div>
+
+    <label>Email</label>
+
+    <input
+  type="email"
+  [(ngModel)]="recoverEmail"
+  placeholder="Correo electrónico"
+  [ngClass]="{
+    'input-invalid': recoverEmail && !isValidEmail(recoverEmail),
+    'input-valid': isValidEmail(recoverEmail)
+  }"
+/>
+
+<div class="input-error" *ngIf="recoverEmail && !isValidEmail(recoverEmail)">
+  Debes ingresar un correo electrónico válido
+</div>
+
+    <div class="recover-actions">
+
+     <button 
+  class="btn-primary"
+  (click)="sendRecover()"
+  [disabled]="!isValidEmail(recoverEmail)">
+  Enviar
+</button>
+
+      <button class="btn-cancel" (click)="closeRecover()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
