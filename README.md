@@ -70,7 +70,7 @@ Cada rol tiene permisos específicos dentro de la plataforma.
 
 ---
 
-# 🚀 Tecnologías utilizadas
+# 🚀 Tecnologías utilizadas.
 
 ## Frontend
 - Angular
