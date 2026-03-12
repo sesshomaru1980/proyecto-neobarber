@@ -152,8 +152,9 @@ Puede:
 
 # 🔐 Credenciales de prueba
 
-Para facilitar la evaluación del sistema se configuraron usuarios de prueba.
-
+Para facilitar la evaluación del sistema se configuró usuario administrador
+usuario: admin@neo.com
+contraseña: 123456
 ### Administrador
 
 ---
