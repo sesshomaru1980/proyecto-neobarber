@@ -1,0 +1,571 @@
+<div class="agenda-container">
+
+  <!-- ========================================= -->
+  <!-- HEADER -->
+  <!-- ========================================= -->
+
+  <div class="agenda-header">
+
+    <div>
+
+      <h1>
+        Panel Barbero
+      </h1>
+
+      <p>
+        Gestiona la agenda,
+        revisa las citas y
+        actualiza su estado.
+      </p>
+
+    </div>
+
+    <button
+      class="primary-btn"
+      (click)="openBlockModal()"
+    >
+      Bloquear horario
+    </button>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- ERROR -->
+  <!-- ========================================= -->
+
+  <div
+    *ngIf="error"
+    class="error-box"
+  >
+    {{ error }}
+  </div>
+
+  <!-- ========================================= -->
+  <!-- DASHBOARD -->
+  <!-- ========================================= -->
+
+  <div class="stats-grid">
+<div
+  *ngIf="auth.role() === 'Barber'"
+  class="stat-card income-card"
+>
+
+  <span>💰</span>
+
+  <h3>
+
+    $ {{ income | number:'1.0-0' }}
+
+  </h3>
+
+  <p>
+
+    Mis ingresos
+
+  </p>
+
+</div>
+
+<div
+  *ngIf="auth.role() === 'Barber'"
+  class="stat-card occupation-card"
+>
+
+  <span>📈</span>
+
+  <h3>
+
+    {{ occupation }}%
+
+  </h3>
+
+  <p>
+
+    Ocupación
+
+  </p>
+
+</div>
+    <div class="stat-card">
+
+      <span>📅</span>
+
+      <h3>
+        {{ totalAppointments }}
+      </h3>
+
+      <p>Total</p>
+
+    </div>
+
+    <div class="stat-card pending-card">
+
+      <span>🟡</span>
+
+      <h3>
+        {{ pendingAppointments }}
+      </h3>
+
+      <p>Pendientes</p>
+
+    </div>
+
+    <div class="stat-card confirmed-card">
+
+      <span>🟢</span>
+
+      <h3>
+        {{ confirmedAppointments }}
+      </h3>
+
+      <p>Confirmadas</p>
+
+    </div>
+
+    <div class="stat-card cancelled-card">
+
+      <span>🔴</span>
+
+      <h3>
+        {{ cancelledAppointments }}
+      </h3>
+
+      <p>Canceladas</p>
+
+    </div>
+
+    <div class="stat-card blocked-card">
+
+      <span>🚫</span>
+
+      <h3>
+        {{ blockedAppointments }}
+      </h3>
+
+      <p>Bloqueadas</p>
+
+    </div>
+
+  </div>
+<div
+  *ngIf="
+    auth.role() === 'Barber'
+    &&
+    nextAppointment
+  "
+  class="next-appointment-card"
+>
+
+  <h2>
+
+    ⏰ Próxima cita
+
+  </h2>
+
+  <h3>
+
+    {{ nextAppointment.serviceId?.name }}
+
+  </h3>
+
+  <p>
+
+    Cliente:
+
+    <strong>
+
+      {{ nextAppointment.clientId?.fullName }}
+
+    </strong>
+
+  </p>
+
+  <p>
+
+    {{ nextAppointment.startAt | date:'medium' }}
+
+  </p>
+
+</div>
+  <!-- ========================================= -->
+  <!-- MODAL BLOQUEO -->
+  <!-- ========================================= -->
+
+  <div
+    *ngIf="showBlockModal"
+    class="modal-overlay"
+  >
+
+    <div class="modal-card">
+
+      <div
+        *ngIf="blockError"
+        class="modal-error"
+      >
+        {{ blockError }}
+      </div>
+
+      <h2>
+        Bloquear horario
+      </h2>
+
+      <!-- SOLO ADMIN VE EL SELECT -->
+
+<div *ngIf="auth.role() === 'Admin'">
+
+  <label>
+    Barbero
+  </label>
+
+  <select
+    [(ngModel)]="blockData.barberId"
+  >
+
+    <option value="">
+      Selecciona
+    </option>
+
+    <option
+      *ngFor="let b of barbers"
+      [value]="b._id"
+    >
+      {{ b.fullName }}
+    </option>
+
+  </select>
+
+</div>
+
+      <label>
+        Fecha y hora
+      </label>
+
+      <input
+        type="datetime-local"
+        [(ngModel)]="blockData.startAt"
+      />
+<label>
+  Fecha final
+</label>
+
+<input
+  type="datetime-local"
+  [(ngModel)]="blockData.endAt"
+  (change)="debugEndDate()"
+/>
+      <label>
+        Motivo
+      </label>
+
+      <textarea
+        rows="3"
+        [(ngModel)]="blockData.notes"
+      ></textarea>
+
+      <div class="modal-actions">
+
+        <button
+          class="outline-btn"
+          (click)="closeBlockModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          (click)="blockSchedule()"
+        >
+          Bloquear
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- CARD -->
+  <!-- ========================================= -->
+
+  <div class="agenda-card">
+
+    <div class="agenda-top">
+
+      <h2>
+        Agenda de citas
+      </h2>
+
+      <select
+        [(ngModel)]="filterStatus"
+        class="filter-select"
+      >
+
+        <option value="Todos">
+          Todos
+        </option>
+
+        <option value="Pendiente">
+          Pendiente
+        </option>
+
+        <option value="Confirmada">
+          Confirmada
+        </option>
+
+        <option value="Cancelada">
+          Cancelada
+        </option>
+
+        <option value="Bloqueada">
+          Bloqueada
+        </option>
+
+      </select>
+
+      <button
+        (click)="loadAgenda()"
+        class="outline-btn"
+      >
+        Recargar
+      </button>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- EMPTY -->
+    <!-- ========================================= -->
+
+    <div
+      *ngIf="filteredAppointments.length === 0"
+      class="empty"
+    >
+      No hay citas registradas.
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ITEM -->
+    <!-- ========================================= -->
+
+    <div
+      *ngFor="let a of filteredAppointments"
+      class="appointment-item"
+    >
+
+      <div
+        class="status-badge"
+        [ngClass]="{
+          'pending': a.status === 'Pendiente',
+          'confirmed': a.status === 'Confirmada',
+          'cancelled': a.status === 'Cancelada'
+        }"
+      >
+
+        {{
+          a.isBlocked
+          ? 'Bloqueada'
+          : a.status
+        }}
+
+      </div>
+
+      <h3>
+
+        {{
+
+          a.isBlocked
+
+          ? 'Horario bloqueado 🚫'
+
+          : (
+
+            a.serviceId?.name ||
+
+            'Servicio'
+          )
+        }}
+
+      </h3>
+
+      <!-- ========================================= -->
+<!-- CITA NORMAL -->
+<!-- ========================================= -->
+
+<p *ngIf="!a.isBlocked">
+
+  <strong>
+    Cliente:
+  </strong>
+
+  {{
+
+    a.clientId?.fullName ||
+
+    'No disponible'
+  }}
+
+</p>
+
+<p
+  *ngIf="
+    auth.role() === 'Admin'
+  "
+>
+
+  <strong>
+    Barbero:
+  </strong>
+
+  {{
+
+    a.barberId?.fullName ||
+
+    'No disponible'
+  }}
+
+</p>
+
+<p
+  *ngIf="
+    !a.isBlocked &&
+    a.serviceId
+  "
+>
+
+  <strong>
+    Duración:
+  </strong>
+
+  {{
+    a.serviceId.durationMinutes
+  }}
+  min
+
+</p>
+
+<p
+  *ngIf="
+    !a.isBlocked &&
+    a.serviceId
+  "
+>
+
+  <strong>
+    Precio:
+  </strong>
+
+  COP {{ a.serviceId.price | number:'1.0-0' }}
+
+</p>
+
+<!-- ========================================= -->
+<!-- BLOQUEO -->
+<!-- ========================================= -->
+
+<p *ngIf="a.isBlocked">
+
+  <strong>
+    Motivo:
+  </strong>
+
+  {{ a.notes }}
+
+</p>
+
+<p *ngIf="a.isBlocked">
+
+  <strong>
+    Fecha inicio:
+  </strong>
+
+  {{ a.startAt | date:'dd/MM/yyyy' }}
+
+</p>
+
+<p *ngIf="a.isBlocked">
+
+  <strong>
+    Hora inicio:
+  </strong>
+
+  {{ a.startAt | date:'hh:mm a' }}
+
+</p>
+
+<p *ngIf="a.isBlocked">
+
+  <strong>
+    Fecha final:
+  </strong>
+
+  {{ a.endAt | date:'dd/MM/yyyy' }}
+
+</p>
+
+<p *ngIf="a.isBlocked">
+
+  <strong>
+    Hora final:
+  </strong>
+
+  {{ a.endAt | date:'hh:mm a' }}
+
+</p>
+
+<!-- ========================================= -->
+<!-- FECHA CITA NORMAL -->
+<!-- ========================================= -->
+
+<p *ngIf="!a.isBlocked">
+
+  <strong>
+    Inicio:
+  </strong>
+
+  {{ a.startAt | date:'short' }}
+
+</p>
+
+      <div class="actions">
+
+        <button
+
+          *ngIf="
+            a.status === 'Pendiente'
+            &&
+            !a.isBlocked
+          "
+
+          class="success-btn"
+
+          (click)="confirmAppointment(a._id)"
+        >
+
+          ✅ Confirmar
+
+        </button>
+
+        <button
+
+          *ngIf="
+            !a.isBlocked
+            &&
+            a.status !== 'Cancelada'
+          "
+
+          class="danger-btn"
+
+          (click)="cancelAppointment(a._id)"
+        >
+
+          ❌ Cancelar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

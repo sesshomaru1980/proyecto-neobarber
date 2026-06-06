@@ -1,0 +1,338 @@
+<div class="page-shell">
+
+  <!-- MODAL ÉXITO -->
+
+  <div
+    class="success-modal-overlay"
+    *ngIf="showSuccessModal"
+  >
+
+    <div class="success-modal">
+
+      <h2>
+        ✅ Reserva confirmada
+      </h2>
+
+      <p>
+        Tu cita fue registrada correctamente.
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="closeSuccessModal()"
+      >
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- MODAL ERROR -->
+
+  <div
+    class="error-modal-overlay"
+    *ngIf="showErrorModal"
+  >
+
+    <div class="error-modal">
+
+      <h2 class="error-title">
+
+  ❌ Error
+
+</h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="closeErrorModal()"
+      >
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="page-header">
+    <h2>Agendar cita</h2>
+    <p>
+      Selecciona barbero, servicio y un horario disponible
+      dentro de la jornada de atención.
+    </p>
+  </div>
+
+  
+
+  <!--
+<div *ngIf="error" class="alert error">
+  {{ error }}
+</div>
+-->
+
+  <div
+    *ngIf="auth.role() !== 'Client'"
+    class="alert warning"
+  >
+    Esta pantalla está pensada para usuarios con rol
+    <strong>Client</strong>.
+  </div>
+
+  <div class="card nb-card appointment-card">
+
+    <!-- ========================================= -->
+    <!-- INFORMACIÓN DE HORARIO                    -->
+    <!-- ========================================= -->
+
+    <div class="info-box">
+
+      <strong>
+        🕒 Horario de atención
+      </strong>
+
+      <br /><br />
+
+      Lunes a sábado de
+      <strong>09:00 AM</strong>
+      a
+      <strong>08:00 PM</strong>.
+
+      <br /><br />
+
+      Las reservas se organizan en
+      intervalos de 30 minutos.
+
+      <br />
+
+      Algunos servicios pueden requerir más
+      tiempo según su duración.
+
+    </div>
+
+    <div class="form-grid">
+
+      <!-- ========================================= -->
+      <!-- BARBERO                                   -->
+      <!-- ========================================= -->
+
+      <div class="field">
+
+  <label>
+    Barbero
+  </label>
+
+ <select
+  [(ngModel)]="barberId"
+  (change)="onBarberChange()"
+>
+
+    <option value="">
+      Seleccione...
+    </option>
+
+    <option
+      *ngFor="let b of barbers"
+      [value]="getBarberId(b)"
+    >
+
+      {{ getBarberName(b) }}
+
+    </option>
+
+  </select>
+
+</div>
+
+
+
+<!-- ========================================= -->
+<!-- PREVIEW DEL BARBERO                       -->
+<!-- ========================================= -->
+
+<div
+  class="service-preview"
+  *ngIf="selectedBarber"
+>
+
+  <div
+    class="service-preview-image"
+    *ngIf="selectedBarber.imageUrl"
+  >
+
+    <img
+      [src]="selectedBarber.imageUrl"
+      [alt]="getBarberName(selectedBarber)"
+    />
+
+  </div>
+
+  <div class="service-preview-content">
+
+    <h3>
+      {{ getBarberName(selectedBarber) }}
+    </h3>
+
+    <p>
+      {{ selectedBarber.bio }}
+    </p>
+
+  </div>
+
+</div>
+      <!-- ========================================= -->
+      <!-- SERVICIO                                  -->
+      <!-- ========================================= -->
+
+      <div class="field">
+
+  <label>
+    Servicio
+  </label>
+
+  <select
+    [(ngModel)]="serviceId"
+    (change)="onServiceChange()"
+  >
+
+    <option value="">
+      Seleccione...
+    </option>
+
+    <option
+      *ngFor="let s of services"
+      [value]="s._id"
+    >
+
+      {{ s.name }}
+      ({{ s.durationMinutes }} min)
+
+    </option>
+
+  </select>
+
+</div>
+<!-- ========================================= -->
+<!-- DETALLE DEL SERVICIO                       -->
+<!-- ========================================= -->
+
+<div
+  class="service-preview"
+  *ngIf="selectedService"
+>
+
+  <div
+    class="service-preview-image"
+    *ngIf="selectedService.imageUrl"
+  >
+
+    <img
+      [src]="selectedService.imageUrl"
+      [alt]="selectedService.name"
+    />
+
+  </div>
+
+  <div class="service-preview-content">
+
+    <h3>
+
+      {{ selectedService.name }}
+
+    </h3>
+
+    <p>
+
+      {{ selectedService.description }}
+
+    </p>
+
+    <div class="service-preview-meta">
+
+      <span>
+
+        ⏱️
+        {{ selectedService.durationMinutes }}
+        min
+
+      </span>
+
+      <span>
+
+     💰
+COP {{ selectedService.price | number:'1.0-0' }}
+
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+      <!-- ========================================= -->
+      <!-- FECHA Y HORA                              -->
+      <!-- ========================================= -->
+
+      <div class="field">
+
+        <label>Fecha y hora</label>
+
+        <input
+          type="datetime-local"
+          [(ngModel)]="startAt"
+          [min]="minDateTime"
+        />
+
+        <small class="helper-text">
+
+          No se permiten domingos.
+
+          Los horarios deben estar entre
+          las 09:00 AM y las 08:00 PM.
+
+          La disponibilidad depende de la
+          duración del servicio seleccionado.
+
+        </small>
+
+      </div>
+
+      <!-- ========================================= -->
+      <!-- NOTAS                                     -->
+      <!-- ========================================= -->
+
+      <div class="field">
+
+        <label>
+          Notas (opcional)
+        </label>
+
+        <textarea
+          [(ngModel)]="notes"
+          rows="4"
+          placeholder="Ej. Por favor puntual"
+        ></textarea>
+
+      </div>
+
+    </div>
+
+    <div class="actions-row">
+
+      <button
+        type="button"
+        class="btn btn-primary btn-large"
+        (click)="create()"
+      >
+        Agendar cita
+      </button>
+
+    </div>
+
+  </div>
+</div>

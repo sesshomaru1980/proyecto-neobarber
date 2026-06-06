@@ -1,0 +1,116 @@
+{
+  "_comentario": "Este archivo contiene todos los ejemplos de prueba para la API NeoBarber. Cada objeto corresponde al body que debe pegarse en Swagger según el endpoint indicado.",
+
+  "auth": {
+    "register_admin": {
+      "descripcion": "Registrar usuario administrador",
+      "endpoint": "POST /api/auth/register",
+      "body": {
+        "fullName": "Admin Principal",
+        "email": "admin@neo.com",
+        "password": "123456",
+        "role": "Admin"
+      }
+    },
+    "register_barber": {
+      "descripcion": "Registrar usuario barbero",
+      "endpoint": "POST /api/auth/register",
+      "body": {
+        "fullName": "Carlos Barber",
+        "email": "carlos@neo.com",
+        "password": "123456",
+        "role": "Barber"
+      }
+    },
+    "register_client": {
+      "descripcion": "Registrar usuario cliente",
+      "endpoint": "POST /api/auth/register",
+      "body": {
+        "fullName": "Juan Cliente",
+        "email": "juan@neo.com",
+        "password": "123456",
+        "role": "Client"
+      }
+    },
+    "login": {
+      "descripcion": "Login de usuario",
+      "endpoint": "POST /api/auth/login",
+      "body": {
+        "email": "admin@neo.com",
+        "password": "123456"
+      }
+    }
+  },
+
+  "services": {
+    "create_service": {
+      "descripcion": "Crear servicio (solo Admin)",
+      "endpoint": "POST /api/services",
+      "body": {
+        "name": "Corte Clásico",
+        "description": "Corte tradicional masculino",
+        "durationMinutes": 30,
+        "price": 20000
+      }
+    },
+    "update_service": {
+      "descripcion": "Actualizar servicio",
+      "endpoint": "PUT /api/services/{id}",
+      "body": {
+        "name": "Corte Moderno",
+        "description": "Corte actualizado",
+        "durationMinutes": 40,
+        "price": 25000
+      }
+    }
+  },
+
+  "barbers": {
+    "upsert_barber_profile": {
+      "descripcion": "Crear o actualizar perfil de barbero",
+      "endpoint": "POST /api/barbers/upsert",
+      "body": {
+        "userId": "PEGAR_ID_DEL_BARBER",
+        "bio": "Especialista en cortes modernos y degradados",
+        "weeklyAvailability": [
+          { "dayOfWeek": 1, "start": "09:00", "end": "18:00" },
+          { "dayOfWeek": 2, "start": "09:00", "end": "18:00" },
+          { "dayOfWeek": 3, "start": "09:00", "end": "18:00" }
+        ]
+      }
+    }
+  },
+
+  "appointments": {
+    "create_appointment": {
+      "descripcion": "Crear cita (solo Client)",
+      "endpoint": "POST /api/appointments",
+      "body": {
+        "barberId": "PEGAR_ID_BARBER",
+        "serviceId": "PEGAR_ID_SERVICIO",
+        "startAt": "2026-10-01T15:00:00.000Z",
+        "notes": "Prueba de cita"
+      }
+    },
+    "update_status": {
+      "descripcion": "Actualizar estado de cita (Confirmada, Cancelada, Completada)",
+      "endpoint": "PUT /api/appointments/{id}/status",
+      "body": {
+        "status": "Confirmada"
+      }
+    }
+  },
+
+  "availability": {
+    "create_block": {
+      "descripcion": "Bloquear horario del barbero",
+      "endpoint": "POST /api/availability/block",
+      "body": {
+        "barberId": "PEGAR_ID_BARBER",
+        "startAt": "2026-10-01T12:00:00.000Z",
+        "endAt": "2026-10-01T13:00:00.000Z",
+        "reason": "Almuerzo"
+      }
+    }
+  }
+}

@@ -1,0 +1,305 @@
+<div class="dashboard-container">
+
+  <div class="dashboard-header">
+
+    <div>
+
+      <h1>
+        Dashboard Administrador
+      </h1>
+
+      <p>
+        Resumen general de NeoBarber
+      </p>
+
+    </div>
+
+    <button
+      class="reload-btn"
+      (click)="loadDashboard()"
+    >
+      Recargar
+    </button>
+
+  </div>
+
+  <div *ngIf="loading">
+
+    Cargando...
+
+  </div>
+
+  <div
+    *ngIf="error"
+    class="error-box"
+  >
+    {{ error }}
+  </div>
+
+  <div
+    *ngIf="!loading"
+    class="stats-grid"
+  >
+
+    <div class="stat-card">
+
+      <span>👥</span>
+
+      <h2>
+        {{ dashboard.clients }}
+      </h2>
+
+      <p>Clientes</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <span>💈</span>
+
+      <h2>
+        {{ dashboard.barbers }}
+      </h2>
+
+      <p>Barberos</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <span>✂️</span>
+
+      <h2>
+        {{ dashboard.services }}
+      </h2>
+
+      <p>Servicios</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <span>📅</span>
+
+      <h2>
+        {{ dashboard.appointments }}
+      </h2>
+
+      <p>Citas</p>
+
+    </div>
+
+    <div class="stat-card income">
+
+  <span>💰</span>
+
+  <h2>
+    $ {{ dashboard.income | number:'1.0-0' }}
+  </h2>
+
+  <p>Ingresos</p>
+
+</div>
+
+<div class="stat-card occupation">
+
+  <span>📈</span>
+
+  <h2>
+
+    <h2>
+
+  {{
+
+    (
+      dashboard.appointments > 0
+
+        ? (
+            dashboard.confirmedAppointments
+            /
+            dashboard.appointments
+            * 100
+          )
+
+        : 0
+    )
+
+    | number:'1.1-1'
+
+  }}%
+
+</h2>
+
+  </h2>
+
+  <p>Ocupación</p>
+
+</div>
+
+  </div>
+
+  <div
+    *ngIf="!loading"
+    class="stats-grid second-row"
+  >
+
+    <div class="mini-card pending">
+
+      <h3>
+        {{ dashboard.pendingAppointments }}
+      </h3>
+
+      <p>Pendientes</p>
+
+    </div>
+
+    <div class="mini-card confirmed">
+
+      <h3>
+        {{ dashboard.confirmedAppointments }}
+      </h3>
+
+      <p>Confirmadas</p>
+
+    </div>
+
+    <div class="mini-card cancelled">
+
+      <h3>
+        {{ dashboard.cancelledAppointments }}
+      </h3>
+
+      <p>Canceladas</p>
+
+    </div>
+
+    <div class="mini-card blocked">
+
+      <h3>
+        {{ dashboard.blockedAppointments }}
+      </h3>
+
+      <p>Bloqueadas</p>
+
+    </div>
+
+  </div>
+
+  <div
+    *ngIf="
+      dashboard.latestAppointments?.length
+    "
+    class="table-card"
+  >
+
+    <h2 class="section-title">
+  📅 Últimas citas registradas
+</h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Cliente</th>
+
+          <th>Barbero</th>
+
+          <th>Servicio</th>
+
+          <th>Fecha</th>
+<th>Hora</th>
+    <th>Precio</th>
+
+    <th>Estado</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+       <tr
+  *ngFor="
+    let a of
+    dashboard.latestAppointments
+  "
+>
+
+  <td>
+    {{ a.clientId?.fullName }}
+  </td>
+
+  <td>
+    {{ a.barberId?.fullName }}
+  </td>
+
+  <td>
+    {{ a.serviceId?.name }}
+  </td>
+
+ <td>
+
+  {{ a.startAt | date:'dd/MM/yyyy' }}
+
+</td>
+
+<td>
+
+  {{ a.startAt | date:'hh:mm a' }}
+
+</td>
+
+<td>
+
+  COP
+
+  {{
+
+    a.serviceId?.price
+
+    | number:'1.0-0'
+
+  }}
+
+</td>
+
+  <td>
+
+    <span
+
+      class="status-pill"
+
+      [ngClass]="{
+
+        'pending':
+          a.status === 'Pendiente',
+
+        'confirmed':
+          a.status === 'Confirmada',
+
+        'cancelled':
+          a.status === 'Cancelada',
+
+        'blocked':
+          a.status === 'Bloqueada'
+
+      }"
+
+    >
+
+      {{ a.status }}
+
+    </span>
+
+  </td>
+
+</tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

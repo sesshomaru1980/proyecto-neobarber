@@ -1,0 +1,20 @@
+<div class="login-wrapper">
+  <div class="overlay-pattern"></div>
+  <div class="login-card">
+    <img src="assets/logo-neobarber.png" alt="Logo NeoBarber" class="logo-neobarber" />
+    <h2>Registro</h2>
+    <p class="subtitle">Crea una cuenta para ingresar a NeoBarber</p>
+    <div *ngIf="msg" class="success-box">{{ msg }}</div>
+    <div *ngIf="error" class="error-box">{{ error }}</div>
+    <label>Nombre completo</label>
+    <input [(ngModel)]="fullName" placeholder="Juan Cliente" />
+    <label>Email</label>
+    <input [(ngModel)]="email" placeholder="correo@neo.com" />
+    <label>Contraseña</label>
+    <input type="password" [(ngModel)]="password" placeholder="******" />
+    <button class="btn-login" (click)="submit()">Registrar</button>
+    <div class="back-link">
+      <a routerLink="/">← Volver al inicio</a>
+    </div>
+  </div>
+</div>

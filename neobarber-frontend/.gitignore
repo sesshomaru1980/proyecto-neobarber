@@ -1,0 +1,34 @@
+node_modules/
+dist/
+.angular/
+.cache/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Angular
+dist/
+.angular/
+.cache/
+
+# environment
+.env
+
+# logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

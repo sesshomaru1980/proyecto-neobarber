@@ -1,0 +1,237 @@
+<div class="appointments-container">
+
+  <!-- ========================================= -->
+  <!-- TÍTULO -->
+  <!-- ========================================= -->
+
+  <div class="header-section">
+
+    <h1>📅 Mis citas</h1>
+
+    <p class="subtitle">
+      Consulta el historial y estado de tus citas.
+    </p>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- ERROR -->
+  <!-- ========================================= -->
+
+  <div
+    *ngIf="error"
+    class="error-box"
+  >
+    {{ error }}
+  </div>
+
+  <!-- ========================================= -->
+  <!-- SIN CITAS -->
+  <!-- ========================================= -->
+
+  <div
+    *ngIf="list.length === 0 && !error"
+    class="empty-state"
+  >
+
+    📭 No tienes citas registradas.
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- LISTA -->
+  <!-- ========================================= -->
+
+  <div
+  *ngFor="let a of list"
+  class="appointment-card"
+>
+
+  <!-- CABECERA -->
+
+  <div class="card-header">
+
+    <h3>
+
+      ✂️
+
+      {{
+
+        a?.serviceId?.name ||
+
+        a?.service?.name ||
+
+        'Servicio'
+      }}
+
+    </h3>
+
+    <span
+      class="status-badge"
+
+      [ngClass]="{
+
+        'pending':
+          a?.status === 'Pendiente',
+
+        'confirmed':
+          a?.status === 'Confirmada',
+
+        'cancelled':
+          a?.status === 'Cancelada',
+
+        'blocked':
+          a?.status === 'Bloqueada'
+      }"
+    >
+
+      {{ a?.status }}
+
+    </span>
+
+  </div>
+
+  <!-- IMAGEN SERVICIO -->
+
+  <div
+    class="service-preview-image"
+    *ngIf="
+      a?.serviceId?.imageUrl ||
+      a?.service?.imageUrl
+    "
+  >
+
+    <img
+
+      [src]="
+        a?.serviceId?.imageUrl ||
+        a?.service?.imageUrl
+      "
+
+      [alt]="
+        a?.serviceId?.name ||
+        a?.service?.name
+      "
+    />
+
+  </div>
+
+  <!-- DETALLES -->
+
+  <div class="card-body">
+
+    <p>
+
+      💈
+
+      <strong>Barbero:</strong>
+
+      {{
+
+        a?.barberId?.fullName ||
+
+        a?.barber?.fullName ||
+
+        'No disponible'
+      }}
+
+    </p>
+
+    <p>
+
+     📅 <strong>Inicio:</strong>
+{{ a?.startAt | date:'MMM d, y' }}
+
+⏰ <strong>Hora:</strong>
+{{ a?.startAt | date:'h:mm a' }}
+
+    </p>
+
+    <p>
+
+      ⏰
+
+      <strong>Fin:</strong>
+
+      {{
+
+        a?.endAt
+          | date:'shortTime'
+      }}
+
+    </p>
+
+    <p>
+
+  ⏱️
+
+  <strong>Duración:</strong>
+
+  {{
+
+    a?.serviceId?.durationMinutes ||
+
+    a?.service?.durationMinutes ||
+
+    0
+
+  }}
+
+  min
+
+</p>
+
+<p>
+
+  💰
+
+  <strong>Precio:</strong>
+
+  $
+
+  {{
+
+    (
+
+      a?.serviceId?.price ||
+
+      a?.service?.price ||
+
+      0
+
+    ) | number:'1.0-0'
+
+  }}
+
+</p>
+
+  </div>
+
+  <!-- ACCIONES -->
+
+  <div class="card-actions">
+
+    <button
+
+      *ngIf="
+        a?.status === 'Pendiente'
+      "
+
+      (click)="
+        cancelAppointment(
+          a._id
+        )
+      "
+
+      class="cancel-btn"
+    >
+
+      ❌ Cancelar cita
+
+    </button>
+
+  </div>
+
+</div>
+
+</div>
